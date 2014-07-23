@@ -21,7 +21,7 @@
     
     <!-- Email Label -->
     <TextView
-        android:id="@+id/email"
+        android:id="@+id/dayOfWeek"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="2dip"
@@ -29,12 +29,32 @@
     
     <!-- Mobile number label -->
     <TextView
-        android:id="@+id/mobile"
+        android:id="@+id/meal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:text="Mobile: "
         android:textColor="#5d5d5d"
+        android:textStyle="bold" />
+    
+    <!-- Station label -->
+    <TextView
+        android:id="@+id/station"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="Station: "
+        android:textColor="#5e5e5e"
+        android:textStyle="bold" />
+    
+    <!-- Dining Hall label -->
+    <TextView
+        android:id="@+id/diningHall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="Station: "
+        android:textColor="#5f5f5f"
         android:textStyle="bold" />
     
 </LinearLayout>
