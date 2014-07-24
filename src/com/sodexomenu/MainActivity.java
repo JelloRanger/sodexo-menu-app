@@ -19,11 +19,11 @@ import android.widget.SimpleAdapter;
 
 public class MainActivity extends ListActivity {
 
+	// used to show progress of loading menu data
 	private ProgressDialog pDialog;
 	
 	// URL to get sodexo menu JSON
-	//private static String url = "http://m.uploadedit.com/b037/140599911160.txt";
-	private static String url = "http://m.uploadedit.com/b037/1406074507953.txt";
+	private static String url = "http://m.uploadedit.com/b037/1406074507953.txt"; // FOR TEST PURPOSES
 	
 	// JSON node names
 	private static final String TAG_MENU = "menu";
@@ -34,20 +34,18 @@ public class MainActivity extends ListActivity {
 	private static final String TAG_NAME = "name";
 	private static final String TAG_DININGHALL = "diningHall";
 	
-	private int numberthing = 0;
-	
-    // halls JSONArray
-    JSONArray halls = null;
+	private int numberthing = 0; // necessary for id in hashmap...will look at removing it in future
     
     // Hashmap for ListView
-    ArrayList<HashMap<String, String>> hallList;
+    ArrayList<HashMap<String, String>> dinHallItem;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		hallList = new ArrayList<HashMap<String, String>>();
+		// initialize hashmap necessary for listview
+		dinHallItem = new ArrayList<HashMap<String, String>>();
 		
 		// Calling async task to get json
 		new GetHalls().execute();
@@ -90,8 +88,9 @@ public class MainActivity extends ListActivity {
 					
 					//loop through all dininghalls
 					for (int i = 0; i < arr.length(); i++) {
-						JSONObject c = arr.getJSONObject(i);
 						
+						// grab individual dining hall
+						JSONObject c = arr.getJSONObject(i);
 						String diningHall = c.getString(TAG_DININGHALL);
 						
 						// construct dining hall object
@@ -108,15 +107,10 @@ public class MainActivity extends ListActivity {
 							// grab all attributes of FoodItem
 							JSONArray attributes = d.getJSONArray(TAG_ATTRIBUTES);
 							for (int j = 0; j < attributes.length(); j++) {
-								//String attr = attributes.getString(j);
 								fi.addAttribute(attributes.getString(j));
 							}
 							
-							/*String station = d.getString(TAG_STATION);
-							String dayOfWeek = d.getString(TAG_DAYOFWEEK);
-							String meal = d.getString(TAG_MEAL);
-							String name = d.getString(TAG_NAME);*/
-							
+							// grab other properties of food item
 							fi.setDayOfWeek(d.getString(TAG_DAYOFWEEK));
 							fi.setMealTime(d.getString(TAG_MEAL));
 							fi.setName(d.getString(TAG_NAME));
@@ -125,20 +119,6 @@ public class MainActivity extends ListActivity {
 							// add FoodItem to dining hall
 							dh.addFoodItem(fi);
 							
-							// tmp hashmap for single dining hall
-							/*HashMap<String, String> hall = new HashMap<String, String>();
-							
-							// adding each child node to HashMap key => value
-							hall.put("id", String.valueOf(numberthing));
-							numberthing++;
-							hall.put(TAG_NAME, name);
-							hall.put(TAG_DAYOFWEEK, dayOfWeek);
-							hall.put(TAG_MEAL, meal);
-							hall.put(TAG_STATION, station);
-							hall.put(TAG_DININGHALL, diningHall);
-							
-							// adding meal to hall list
-							hallList.add(hall);*/
 						}
 
 						// add dining hall to dining hall list
@@ -182,6 +162,7 @@ public class MainActivity extends ListActivity {
 			return null;
 		}
 		
+		// add dining halls into dining hall list view
 		protected void generateDiningHallListView(ArrayList<DiningHall> diningHallList) {
 			
 			// sort list of dining halls by name
@@ -200,7 +181,7 @@ public class MainActivity extends ListActivity {
 				hall.put("id", String.valueOf(numberthing));
 				numberthing++;
 				hall.put(TAG_DININGHALL, diningHallList.get(i).getName());
-				hallList.add(hall);
+				dinHallItem.add(hall);
 			}
 		}
 		
@@ -214,13 +195,16 @@ public class MainActivity extends ListActivity {
 			/**
 			 * Updating parsed JSON data into ListView
 			 */
+			
+			// code for displaying all meals in listview
 			/*ListAdapter adapter = new SimpleAdapter(
 			 		MainActivity.this, hallList,
 			 		R.layout.list_item, new String[] { TAG_NAME, TAG_DAYOFWEEK,
 			 				TAG_MEAL, TAG_STATION, TAG_DININGHALL }, new int[] { R.id.name,
 			 				R.id.dayOfWeek, R.id.meal, R.id.station, R.id.diningHall });*/
 			
-			ListAdapter adapter = new SimpleAdapter(MainActivity.this, hallList, R.layout.dining_hall_list_item, 
+			// display dining halls in listview
+			ListAdapter adapter = new SimpleAdapter(MainActivity.this, dinHallItem, R.layout.dining_hall_list_item, 
 													new String[] { TAG_DININGHALL }, new int[] { R.id.name });
 			 
 			setListAdapter(adapter);
