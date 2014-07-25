@@ -2,6 +2,8 @@ package com.sodexomenu;
 
 import java.util.ArrayList;
 
+import android.media.audiofx.Equalizer;
+
 public class DiningHall {
 
 	/**

@@ -11,14 +11,21 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 public class MainActivity extends ListActivity {
 
+	public final static String EXTRA_MESSAGE = "com.sodexomenu.MESSAGE";
+	public static ArrayList<DiningHall> diningHallList;
+	
 	// used to show progress of loading menu data
 	private ProgressDialog pDialog;
 	
@@ -35,7 +42,7 @@ public class MainActivity extends ListActivity {
 	private static final String TAG_DININGHALL = "diningHall";
 	
 	private int numberthing = 0; // necessary for id in hashmap...will look at removing it in future
-    
+	
     // Hashmap for ListView
     ArrayList<HashMap<String, String>> dinHallItem;
     
@@ -49,6 +56,26 @@ public class MainActivity extends ListActivity {
 		
 		// Calling async task to get json
 		new GetHalls().execute();
+	}
+	
+	// open specific dining hall's menu
+	/*public void openMenu(View view) {
+		Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+		EditText editText = (EditText) findViewById(R.id.name);
+		String message = editText.getText().toString();
+		intent.putExtra(EXTRA_MESSAGE, message);
+		startActivity(intent);
+	}*/
+	
+	@Override
+	protected void onListItemClick(ListView lv, View v, int pos, long id) {
+		//super.onListItemClick(lv, v, pos, id);
+		Intent intent = new Intent(MainActivity.this, MenuActivity.class);
+		Log.d("id: ", ""+id);
+		TextView editText = (TextView) findViewById(R.id.name);
+		String message = editText.getText().toString();
+		intent.putExtra(EXTRA_MESSAGE, message);
+		startActivity(intent);
 	}
 	
 	/**
@@ -76,7 +103,7 @@ public class MainActivity extends ListActivity {
 			String jsonStr = sh.makeServiceCall(url, ServiceHandler.GET);
 			
 			// create list to hold all dining halls
-			ArrayList<DiningHall> diningHallList = new ArrayList<DiningHall>();
+			diningHallList = new ArrayList<DiningHall>();
 			
 			Log.d("Response: ", "> " + jsonStr);
 			
@@ -184,6 +211,7 @@ public class MainActivity extends ListActivity {
 				dinHallItem.add(hall);
 			}
 		}
+		
 		
 		@Override
 		protected void onPostExecute(Void result) {
