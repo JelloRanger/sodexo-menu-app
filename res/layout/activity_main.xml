@@ -6,6 +6,15 @@
     <!-- Main ListView
     	 Always give id value as list(@android:id/list)
     -->
+    
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="RPI Dining Halls"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"

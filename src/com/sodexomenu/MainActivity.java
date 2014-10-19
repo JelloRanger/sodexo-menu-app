@@ -20,6 +20,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends ListActivity {
 
@@ -30,7 +31,7 @@ public class MainActivity extends ListActivity {
 	private ProgressDialog pDialog;
 	
 	// URL to get sodexo menu JSON
-	private static String url = "http://m.uploadedit.com/b037/1406074507953.txt"; // FOR TEST PURPOSES
+	private static String url = "http://m.uploadedit.com/b041/1413670784424.txt"; // FOR TEST PURPOSES
 	
 	// JSON node names
 	private static final String TAG_MENU = "menu";
@@ -45,6 +46,7 @@ public class MainActivity extends ListActivity {
 	
     // Hashmap for ListView
     ArrayList<HashMap<String, String>> dinHallItem;
+	//ArrayList<String> dinHallItem;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class MainActivity extends ListActivity {
 
 		// initialize hashmap necessary for listview
 		dinHallItem = new ArrayList<HashMap<String, String>>();
+		//dinHallItem = new ArrayList<String>();
 		
 		// Calling async task to get json
 		new GetHalls().execute();
@@ -69,13 +72,26 @@ public class MainActivity extends ListActivity {
 	
 	@Override
 	protected void onListItemClick(ListView lv, View v, int pos, long id) {
-		//super.onListItemClick(lv, v, pos, id);
+		super.onListItemClick(lv, v, pos, id);
 		Intent intent = new Intent(MainActivity.this, MenuActivity.class);
-		Log.d("id: ", ""+id);
-		TextView editText = (TextView) findViewById(R.id.name);
-		String message = editText.getText().toString();
-		intent.putExtra(EXTRA_MESSAGE, message);
+		
+		
+		//Grab ListView Item clicked
+		String message = lv.getItemAtPosition(pos).toString();
+		
+		//Parse the name of the dining hall
+		String dinHallName = grabName(message);
+
+		intent.putExtra(EXTRA_MESSAGE, dinHallName);
 		startActivity(intent);
+	}
+	
+	//Grabbing the item from onListItemClick returns "{id=0, diningHall="BARH"}"
+	//As a result, we only want to pass the diningHall name value as an attr to the intent
+	//thus, we grab it
+	private static String grabName(String str) {
+		String[] tokens = str.split(",|\\=|\\}|\\{"); // split using delimeters: , and = and { and }
+		return tokens[tokens.length - 1];
 	}
 	
 	/**
@@ -210,6 +226,10 @@ public class MainActivity extends ListActivity {
 				hall.put(TAG_DININGHALL, diningHallList.get(i).getName());
 				dinHallItem.add(hall);
 			}
+			/*for (int i = 0; i < diningHallList.size(); i++) {
+				String hall = diningHallList.get(i).getName();
+				dinHallItem.add(hall);
+			}*/
 		}
 		
 		
@@ -234,6 +254,8 @@ public class MainActivity extends ListActivity {
 			// display dining halls in listview
 			ListAdapter adapter = new SimpleAdapter(MainActivity.this, dinHallItem, R.layout.dining_hall_list_item, 
 													new String[] { TAG_DININGHALL }, new int[] { R.id.name });
+			/*ListAdapter adapter = new SimpleAdapter(MainActivity.this, dinHallItem, R.layout.dining_hall_list_item,
+													new String[] { TAG_DININGHALL }, new int[] { R.id.name });*/
 			 
 			setListAdapter(adapter);
 		}
